@@ -5,8 +5,7 @@ repo: cd-status # The name of this repository
 sites:
   - name: ComicDesigner LP
     url: https://comicdesigner-alpha.vercel.app/lp/ja
-  - name: Wikipedia
-    url: https://en.wikipedia.org
+  
   
 status-website:
   # themeUrl: https://comicdesigner-alpha.vercel.app/status-theme.css
