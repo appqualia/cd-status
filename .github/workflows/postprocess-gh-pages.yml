@@ -21,7 +21,7 @@ jobs:
           ref: gh-pages
           token: ${{ secrets.GH_PAT || github.token }}
 
-            - name: Patch icon paths (force /cd-status/*) and manifest start_url
+      - name: Patch icon paths (force /cd-status/*) and manifest start_url
         shell: bash
         run: |
           set -euo pipefail
