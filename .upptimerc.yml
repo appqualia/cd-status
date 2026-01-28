@@ -6,7 +6,6 @@ sites:
   - name: ComicDesigner LP
     url: https://comicdesigner-alpha.vercel.app/lp/ja
   
-  
 status-website:
   # themeUrl: https://comicdesigner-alpha.vercel.app/status-theme.css
   # Add your custom domain name, or remove the `cname` line if you don't have a domain
