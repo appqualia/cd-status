@@ -21,7 +21,7 @@ jobs:
           ref: gh-pages
           token: ${{ secrets.GH_PAT || github.token }}
 
-      - name: Patch absolute icon paths in HTML
+            - name: Patch icon paths (force /cd-status/*) and manifest start_url
         shell: bash
         run: |
           set -euo pipefail
@@ -29,22 +29,43 @@ jobs:
           python - <<'PY'
           import pathlib, re
 
-          # Replace only absolute paths that start with "/logo-"
-          # e.g. href=/logo-192.png -> href=logo-192.png
-          pattern = re.compile(r'(?P<attr>\b(?:href|src))=/(?P<file>logo-[^"\s>]+)')
-          changed_files = []
+          BASE = "/cd-status"
+          changed = []
 
+          def patch_text(s: str) -> str:
+              # 1) Fix favicon links to always include BASE
+              #    href=/logo-192.png  -> href=/cd-status/logo-192.png
+              #    href=logo-192.png   -> href=/cd-status/logo-192.png
+              s = re.sub(r'(\bhref=)/logo-(\d+\.png)\b', rf'\1{BASE}/logo-\2', s)
+              s = re.sub(r'(\bhref=)logo-(\d+\.png)\b',  rf'\1{BASE}/logo-\2', s)
+
+              # 2) Fix any src="/logo-*.png" patterns too (rare, but safe)
+              s = re.sub(r'(\bsrc=["\'])/logo-(\d+\.png)\b', rf'\1{BASE}/logo-\2', s)
+
+              return s
+
+          # Patch all HTML files in gh-pages
           for p in pathlib.Path(".").rglob("*.html"):
               s = p.read_text(encoding="utf-8", errors="ignore")
-              s2 = pattern.sub(lambda m: f'{m.group("attr")}={m.group("file")}', s)
+              s2 = patch_text(s)
               if s2 != s:
                   p.write_text(s2, encoding="utf-8")
-                  changed_files.append(str(p))
+                  changed.append(str(p))
 
-          if changed_files:
-              print("Patched:", ", ".join(changed_files))
+          # Patch manifest.json: set start_url to BASE (and keep icons as-is)
+          m = pathlib.Path("manifest.json")
+          if m.exists():
+              s = m.read_text(encoding="utf-8", errors="ignore")
+              # start_url: "/" -> "/cd-status/"
+              s2 = re.sub(r'"start_url"\s*:\s*"\s*/\s*"', f'"start_url": "{BASE}/"', s)
+              if s2 != s:
+                  m.write_text(s2, encoding="utf-8")
+                  changed.append(str(m))
+
+          if changed:
+              print("Patched:", ", ".join(changed))
           else:
-              print("No HTML files needed patching.")
+              print("No files needed patching.")
           PY
 
       - name: Commit & push if changed
