@@ -30,6 +30,11 @@ status-website:
       href: /
     - title: GitHub
       href: https://github.com/$OWNER/$REPO
-
+  customBodyHtml: |
+    <div class="lp-topbar">
+      <a class="lp-brand" href="https://comicdesigner-alpha.vercel.app/lp/ja">ComicDesigner</a>
+      <span class="lp-sep">/</span>
+      <span>Status</span>
+    </div>
 # Upptime also supports notifications, assigning issues, and more
 # See https://upptime.js.org/docs/configuration
