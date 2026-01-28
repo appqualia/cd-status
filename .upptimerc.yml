@@ -36,5 +36,18 @@ status-website:
       <span class="lp-sep">/</span>
       <span>Status</span>
     </div>
+    <script>
+      (function () {
+        const shouldIgnore = (args) =>
+          args && typeof args[0] === "string" &&
+          args[0].includes("Invalid scale configuration for scale: xAxes");
+
+        const origError = console.error.bind(console);
+        console.error = (...args) => shouldIgnore(args) ? undefined : origError(...args);
+
+        const origWarn = console.warn.bind(console);
+        console.warn = (...args) => shouldIgnore(args) ? undefined : origWarn(...args);
+      })();
+    </script>
 # Upptime also supports notifications, assigning issues, and more
 # See https://upptime.js.org/docs/configuration
