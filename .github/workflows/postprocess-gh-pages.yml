@@ -1,0 +1,63 @@
+name: Postprocess gh-pages (fix absolute icon paths)
+
+on:
+  workflow_run:
+    workflows: ["Static Site CI"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          token: ${{ secrets.GH_PAT || github.token }}
+
+      - name: Patch absolute icon paths in HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import pathlib, re
+
+          # Replace only absolute paths that start with "/logo-"
+          # e.g. href=/logo-192.png -> href=logo-192.png
+          pattern = re.compile(r'(?P<attr>\b(?:href|src))=/(?P<file>logo-[^"\s>]+)')
+          changed_files = []
+
+          for p in pathlib.Path(".").rglob("*.html"):
+              s = p.read_text(encoding="utf-8", errors="ignore")
+              s2 = pattern.sub(lambda m: f'{m.group("attr")}={m.group("file")}', s)
+              if s2 != s:
+                  p.write_text(s2, encoding="utf-8")
+                  changed_files.append(str(p))
+
+          if changed_files:
+              print("Patched:", ", ".join(changed_files))
+          else:
+              print("No HTML files needed patching.")
+          PY
+
+      - name: Commit & push if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Fix absolute /logo-* paths for GitHub Pages baseUrl"
+          git push origin gh-pages
