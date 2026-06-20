@@ -4,7 +4,7 @@ repo: cd-status # The name of this repository
 
 sites:
   - name: ComicDesigner LP
-    url: https://app.comicdesigner.jp/lp/ja
+    url: https://app.comicdesigner.jp/ja
 
   
 status-website:
@@ -16,7 +16,7 @@ status-website:
   themeUrl: https://comicdesigner-alpha.vercel.app/status-theme.css
   navbar:
     - title: Home
-      href: https://app.comicdesigner.jp/lp/ja
+      href: https://app.comicdesigner.jp/ja
     - title: Status
       href: /cd-status/
   # cname: demo.upptime.js.org
