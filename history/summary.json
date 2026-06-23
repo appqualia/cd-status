@@ -1,8 +1,8 @@
 [
   {
     "name": "ComicDesigner LP",
-    "url": "https://comicdesigner-alpha.vercel.app/lp/ja",
-    "icon": "https://icons.duckduckgo.com/ip3/comicdesigner-alpha.vercel.app.ico",
+    "url": "https://app.comicdesigner.jp/ja",
+    "icon": "https://icons.duckduckgo.com/ip3/app.comicdesigner.jp.ico",
     "slug": "comic-designer-lp",
     "status": "up",
     "uptime": "99.98%",
@@ -10,11 +10,11 @@
     "uptimeWeek": "100.00%",
     "uptimeMonth": "100.00%",
     "uptimeYear": "99.98%",
-    "time": 968,
-    "timeDay": 837,
-    "timeWeek": 1982,
-    "timeMonth": 1211,
-    "timeYear": 968,
+    "time": 969,
+    "timeDay": 1104,
+    "timeWeek": 971,
+    "timeMonth": 1265,
+    "timeYear": 969,
     "dailyMinutesDown": {
       "2026-03-04": 34
     }
